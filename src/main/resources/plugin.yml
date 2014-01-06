@@ -1,0 +1,11 @@
+name: TurfZ
+main : org.turfwars.turfz.TurfZ
+version: 0.0.10a
+author: TheDirtyDan
+commands:
+   test:
+      description: This is a demo command.
+      usage: /<command> [player]
+   create:
+      description: Will allow an administrator to create one of the many things needed to be setup on the server
+      usage: /create [type]
