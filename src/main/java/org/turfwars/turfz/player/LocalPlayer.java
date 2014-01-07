@@ -1,6 +1,7 @@
 package org.turfwars.turfz.player;
 
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.turfwars.turfz.TurfZ;
 
@@ -16,6 +17,8 @@ public class LocalPlayer {
     private String bestTimeString;
 
     private Scoreboard scoreboard;
+    private Objective objective;
+
     private boolean isBleeding;
 
     public LocalPlayer (final Player bukkitPlayer){
@@ -80,6 +83,30 @@ public class LocalPlayer {
      */
     public Scoreboard getScoreboard (){
         return scoreboard;
+    }
+
+    /**
+     *
+     * @return the player's scoreboard objective
+     */
+    public Objective getObjective (){
+        return objective;
+    }
+
+    /**
+     *
+     * @param objective
+     */
+    public void setObjective (final Objective objective){
+        this.objective = objective;
+    }
+
+    /**
+     *
+     * @param zombieKills
+     */
+    public void setZombieKills (int zombieKills){
+        this.zombieKills = zombieKills;
     }
 
     /**
