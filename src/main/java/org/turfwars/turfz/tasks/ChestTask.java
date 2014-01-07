@@ -51,7 +51,6 @@ public class ChestTask implements Runnable {
                 // Chance of spawning in each item based on the percentage set in the configuration
                 if (random.nextInt (100) + 1 <= chestTier.getItemMap ().get (itemKey)){
                     chest.getInventory ().addItem (itemKey);
-                    Messaging.info ("" + chestTier.getItemMap ().get (itemKey));
                 }
             }
         }
