@@ -36,7 +36,7 @@ public class TierRegistry {
                 // Load the object and add it into the map using the name of the tier as the key
                 chestTiers.put (FilenameUtils.removeExtension (tierFile.getName ()), chestTier);
                 Messaging.info (String.format ("Loading tier %s into the system...", FilenameUtils.removeExtension (tierFile.getName ())));
-                Messaging.info ("" + chestTier.getItems ().toString ());
+                Messaging.info ("" + chestTier.getItemMap ().toString ());
             }
         }
     }

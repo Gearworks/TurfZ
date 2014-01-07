@@ -3,13 +3,14 @@ package org.turfwars.turfz.persistence.chests;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ChestTier {
 
     private final String name;
     private final int percentage;
-    private final List<ItemStack> items = new ArrayList<ItemStack> ();
+    private final HashMap<ItemStack, Integer> items = new HashMap<ItemStack, Integer> ();
 
     public ChestTier (final String name, final int percentage){
         this.name = name;
@@ -28,19 +29,17 @@ public class ChestTier {
      *
      * @return all the available by this class
      */
-    public List<ItemStack> getItems (){
+    public HashMap<ItemStack, Integer> getItemMap (){
         return items;
     }
 
     /**
-     * Adds all items from a list into the item list of this class
+     * Adds all items from a map into the item map of this class
      *
-     * @param itemList
+     * @param itemMap
      */
-    public void addItems (final List<ItemStack> itemList){
-        for (final ItemStack itemStack : itemList){
-            items.add (itemStack);
-        }
+    public void addItems (final HashMap<ItemStack, Integer> itemMap){
+        items.putAll (itemMap);
     }
 
     /**

@@ -47,13 +47,11 @@ public class ChestTask implements Runnable {
             // Clean the chest so that way fresh loot can be added in and the chest doesn't get overloaded with crap
             if (chest.getInventory ().getContents ().length > 0) chest.getInventory ().clear ();
 
-            for (final ItemStack itemStack : chestTier.getItems ()){
+            for (final ItemStack itemKey : chestTier.getItemMap ().keySet ()){
                 // Chance of spawning in each item based on the percentage set in the configuration
-                if (random.nextInt (100) + 1 <= chestTier.getPercentage ()){
-                    // No duplicates of any item inside a chest
-                    if (!chest.getInventory ().contains (itemStack)){
-                        chest.getInventory ().addItem (itemStack);
-                    }
+                if (random.nextInt (100) + 1 <= chestTier.getItemMap ().get (itemKey)){
+                    chest.getInventory ().addItem (itemKey);
+                    Messaging.info ("" + chestTier.getItemMap ().get (itemKey));
                 }
             }
         }
