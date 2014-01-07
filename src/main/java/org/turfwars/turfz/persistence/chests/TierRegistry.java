@@ -1,6 +1,7 @@
 package org.turfwars.turfz.persistence.chests;
 
-import org.apache.commons.io.FilenameUtils;
+
+import net.minecraft.util.org.apache.commons.io.FilenameUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.turfwars.turfz.TurfZ;
 import org.turfwars.turfz.utilities.ItemUtil;
