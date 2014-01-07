@@ -35,6 +35,7 @@ public class BleedTask implements Runnable {
             ((Player) entity).damage (1.0D);
             currentTime += 2;
         }else{
+            TurfZ.getPlayerRegistry ().getPlayer ((Player) entity).setBleedingStatus (false);
             Bukkit.getScheduler ().cancelTask (task.getTaskId ());
         }
     }

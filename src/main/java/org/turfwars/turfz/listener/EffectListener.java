@@ -20,10 +20,12 @@ public class EffectListener implements Listener {
     @EventHandler
     public void onPlayerBleed (final EntityDamageByEntityEvent event){
         if (event.getEntity () instanceof Player){
+            if (TurfZ.getPlayerRegistry ().getPlayer ((Player) event.getEntity ()).isBleeding ()) return;
             final int percent = TurfZ.getConfigRegistry ().getConfig ().getInt ("bleed.percent");
             if (random.nextInt (100) + 1 <= percent){
                 BleedTask bleedTask = new BleedTask (event.getEntity (), TurfZ.getConfigRegistry ().getConfig ().getInt ("bleed.length"));
                 bleedTask.start ();
+                TurfZ.getPlayerRegistry ().getPlayer ((Player) event.getEntity ()).setBleedingStatus (true);
             }
         }
     }

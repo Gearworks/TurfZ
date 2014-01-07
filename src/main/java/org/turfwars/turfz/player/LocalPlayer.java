@@ -16,6 +16,7 @@ public class LocalPlayer {
     private String bestTimeString;
 
     private Scoreboard scoreboard;
+    private boolean isBleeding;
 
     public LocalPlayer (final Player bukkitPlayer){
         this.bukkitPlayer = bukkitPlayer;
@@ -67,6 +68,14 @@ public class LocalPlayer {
 
     /**
      *
+     * @return true if the player is already bleeding, otherwise false
+     */
+    public boolean isBleeding (){
+        return isBleeding;
+    }
+
+    /**
+     *
      * @return the player's scoreboard
      */
     public Scoreboard getScoreboard (){
@@ -105,6 +114,14 @@ public class LocalPlayer {
      */
     public void setBestTimeString (String bestTimeString){
         this.bestTimeString = bestTimeString;
+    }
+
+    /**
+     *
+     * @param bleedingStatus
+     */
+    public void setBleedingStatus (boolean bleedingStatus){
+        isBleeding = bleedingStatus;
     }
 
     /**
