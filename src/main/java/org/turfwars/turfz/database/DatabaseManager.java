@@ -6,12 +6,8 @@ import org.turfwars.turfz.database.tasks.Consumer;
 import org.turfwars.turfz.player.LocalPlayer;
 import org.turfwars.turfz.utilities.Messaging;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
-import java.util.Map;
 
 public class DatabaseManager {
 
@@ -74,6 +70,39 @@ public class DatabaseManager {
     }
 
     /**
+     * Will run a result set to check to see if we get any values back
+     *
+     * @param playerName
+     * @return true if the player exists in the database, otherwise false
+     */
+    public boolean playerExists (final String playerName){
+        final Connection conn = getConnection ();
+
+        try{
+            final ResultSet rs = conn.prepareStatement (String.format ("SELECT * FROM players WHERE playername = '%s'", playerName)).executeQuery ();
+            if (rs.next ()){
+                return true;
+            }
+        }catch(SQLException e){
+
+        }
+
+        return false;
+    }
+
+    /**
+     * Needs to be done right away in order for the player loading to happen with nothing null
+     *
+     * @param localPlayer
+     */
+    public void createPlayer (final LocalPlayer localPlayer) throws SQLException{
+        final PreparedStatement ps = getConnection ().prepareStatement (String.format ("INSERT INTO players (playername, kills, zombie_kills, deaths, best_time, avg_time) VALUES ('%s', 0, 0, 0, '0d0h0m0s', '0d0h0m0s')",
+                localPlayer.getBukkitPlayer ().getName ()));
+
+        ps.execute ();
+    }
+
+    /**
      * Will load all the player's stats into the map using the column name as the key
      *
      * @param localPlayer
@@ -84,6 +113,10 @@ public class DatabaseManager {
         final HashMap<String, Object> toReturn = new HashMap<String, Object> ();
 
         try{
+            // Need to create the player into the database
+            if (!playerExists (localPlayer.getBukkitPlayer ().getName ()))
+                createPlayer (localPlayer);
+
             final ResultSet rs =  conn.prepareStatement (String.format ("SELECT * FROM players WHERE playername = '%s'", localPlayer.getBukkitPlayer ().getName ())).executeQuery ();
             final ResultSetMetaData rsm = rs.getMetaData ();
             while (rs.next ()){

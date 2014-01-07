@@ -1,6 +1,7 @@
 package org.turfwars.turfz.player;
 
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
 import org.turfwars.turfz.TurfZ;
 
 import java.util.HashMap;
@@ -11,7 +12,10 @@ public class LocalPlayer {
 
     private int kills;
     private int deaths;
+    private int zombieKills;
     private String bestTimeString;
+
+    private Scoreboard scoreboard;
 
     public LocalPlayer (final Player bukkitPlayer){
         this.bukkitPlayer = bukkitPlayer;
@@ -25,12 +29,13 @@ public class LocalPlayer {
         HashMap<String, Object> playerMap = TurfZ.getDatabaseManager ().getPlayerQuery (this);
         this.kills = (Integer) playerMap.get ("kills");
         this.deaths = (Integer) playerMap.get ("deaths");
+        this.zombieKills = (Integer) playerMap.get ("zombie_kills");
         this.bestTimeString = (String) playerMap.get ("best_time");
     }
 
     /**
      *
-     * @return the number of kills the player has gotten in total
+     * @return the number of kills the player has gotten in their current life
      */
     public int getKills (){
         return kills;
@@ -38,9 +43,17 @@ public class LocalPlayer {
 
     /**
      *
+     * @return the number of zombie kills a player has gotten in their current life
+     */
+    public int getZombieKills (){
+        return zombieKills;
+    }
+
+    /**
+     *
      * @return the number of deaths the player has gotten in total
      */
-    public int getDeaths (){
+    public int getOverallDeaths (){
         return deaths;
     }
 
@@ -54,10 +67,28 @@ public class LocalPlayer {
 
     /**
      *
+     * @return the player's scoreboard
+     */
+    public Scoreboard getScoreboard (){
+        return scoreboard;
+    }
+
+    /**
+     *
      * @param kills
      */
     public void setKills (int kills){
         this.kills = kills;
+    }
+
+
+    /**
+     * Will set the scoreboard object so we can access it from anywhere
+     *
+     * @param scoreboard
+     */
+    public void setScoreboard (final Scoreboard scoreboard){
+        this.scoreboard = scoreboard;
     }
 
     /**
