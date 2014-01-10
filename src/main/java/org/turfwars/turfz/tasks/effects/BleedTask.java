@@ -18,6 +18,8 @@ public class BleedTask implements Runnable {
         this.entity = entity;
         this.length = length;
         this.currentTime = 0;
+
+        TurfZ.getPlayerRegistry ().getPlayer ((Player) entity).setBleedingTask (this);
     }
 
     public synchronized void start (){
@@ -35,8 +37,12 @@ public class BleedTask implements Runnable {
             ((Player) entity).damage (1.0D);
             currentTime += 2;
         }else{
-            TurfZ.getPlayerRegistry ().getPlayer ((Player) entity).setBleedingStatus (false);
-            Bukkit.getScheduler ().cancelTask (task.getTaskId ());
+            stopBleeding ();
         }
+    }
+
+    public void stopBleeding (){
+        TurfZ.getPlayerRegistry ().getPlayer ((Player) entity).setBleedingStatus (false);
+        Bukkit.getScheduler ().cancelTask (task.getTaskId ());
     }
 }

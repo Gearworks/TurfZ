@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.turfwars.turfz.TurfZ;
+import org.turfwars.turfz.tasks.effects.BleedTask;
 
 import java.util.HashMap;
 
@@ -15,6 +16,8 @@ public class LocalPlayer {
     private int deaths;
     private int zombieKills;
     private String bestTimeString;
+
+    private Runnable bleedingTask;
 
     private Scoreboard scoreboard;
     private Objective objective;
@@ -103,6 +106,14 @@ public class LocalPlayer {
 
     /**
      *
+     * @param runnable
+     */
+    public void setBleedingTask (final Runnable runnable){
+        this.bleedingTask = runnable;
+    }
+
+    /**
+     *
      * @param zombieKills
      */
     public void setZombieKills (int zombieKills){
@@ -149,6 +160,13 @@ public class LocalPlayer {
      */
     public void setBleedingStatus (boolean bleedingStatus){
         isBleeding = bleedingStatus;
+    }
+
+    /**
+     * Stop bleeding task (ie if a player bandages)
+     */
+    public void stopBleeding (){
+        ((BleedTask) bleedingTask).stopBleeding ();
     }
 
     /**
