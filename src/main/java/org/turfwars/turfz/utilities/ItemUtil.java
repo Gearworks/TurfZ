@@ -1,7 +1,9 @@
 package org.turfwars.turfz.utilities;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.turfwars.turfz.TurfZ;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,5 +36,21 @@ public class ItemUtil {
         }
 
         return toReturn;
+    }
+
+    public static void addStartingContents (final Player player){
+        for (final String serializedItem : TurfZ.getConfigRegistry ().getConfig ().getStringList ("starting-items")){
+            // Split the item from id and amount
+            final String [] itemString = serializedItem.split (":");
+            ItemStack itemStack;
+
+            if (itemString.length > 1){
+                itemStack = new ItemStack (Integer.parseInt (itemString[0]), Integer.parseInt (itemString[1]));
+            }else{
+                itemStack = new ItemStack (Integer.parseInt (itemString[0]));
+            }
+
+            player.getInventory ().addItem (itemStack);
+        }
     }
 }

@@ -17,6 +17,7 @@ import org.turfwars.turfz.player.PlayerRegistry;
 import org.turfwars.turfz.tasks.ChestTask;
 import org.turfwars.turfz.tasks.ScoreboardTask;
 import org.turfwars.turfz.tasks.SpawningTask;
+import org.turfwars.turfz.tasks.TimeTask;
 import org.turfwars.turfz.utilities.Messaging;
 
 public class TurfZ extends JavaPlugin {
@@ -65,6 +66,8 @@ public class TurfZ extends JavaPlugin {
         Bukkit.getScheduler ().runTaskTimer (this, chestTask, 0L, 20L * 20);
         // Update the scoreboard every two seconds
         Bukkit.getScheduler ().runTaskTimer (this, scoreboardTask, 0L, 20L * 2);
+        // Will update the time played for everybody
+        Bukkit.getScheduler ().runTaskTimer (this, new TimeTask (), 0L, 20L);
 
         new EntityListener ();
         new PlayerListener ();

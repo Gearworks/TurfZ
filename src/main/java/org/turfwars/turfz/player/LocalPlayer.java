@@ -4,7 +4,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.turfwars.turfz.TurfZ;
+import org.turfwars.turfz.database.queries.QuerySavePlayer;
 import org.turfwars.turfz.tasks.effects.BleedTask;
+import org.turfwars.turfz.utilities.Messaging;
 
 import java.util.HashMap;
 
@@ -15,7 +17,7 @@ public class LocalPlayer {
     private int kills;
     private int deaths;
     private int zombieKills;
-    private String bestTimeString;
+    private int timePlayed;
 
     private Runnable bleedingTask;
 
@@ -23,6 +25,7 @@ public class LocalPlayer {
     private Objective objective;
 
     private boolean isBleeding;
+    private boolean isPlaying;
 
     public LocalPlayer (final Player bukkitPlayer){
         this.bukkitPlayer = bukkitPlayer;
@@ -34,10 +37,28 @@ public class LocalPlayer {
      */
     public void load (){
         HashMap<String, Object> playerMap = TurfZ.getDatabaseManager ().getPlayerQuery (this);
+
+        this.isPlaying = (((Integer) playerMap.get ("playing")) == 1 ? true : false);
         this.kills = (Integer) playerMap.get ("kills");
-        this.deaths = (Integer) playerMap.get ("deaths");
+        this.deaths = (Integer) playerMap.get ("total_deaths");
         this.zombieKills = (Integer) playerMap.get ("zombie_kills");
-        this.bestTimeString = (String) playerMap.get ("best_time");
+        this.timePlayed = (Integer) playerMap.get ("playing_time");
+    }
+
+    /**
+     * Will save any value to the MySQL
+     */
+    public void save (){
+        // Kills and deaths queued in PlayerListener
+        TurfZ.getDatabaseManager ().getConsumer ().queueQuery (new QuerySavePlayer (this));
+    }
+
+    /**
+     *
+     * @return the amount of time someone has played on the server (in seconds)
+     */
+    public int getTimePlayed (){
+        return timePlayed;
     }
 
     /**
@@ -66,18 +87,19 @@ public class LocalPlayer {
 
     /**
      *
-     * @return the longest the player has lived
-     */
-    public String getBestTimeString (){
-        return bestTimeString;
-    }
-
-    /**
-     *
      * @return true if the player is already bleeding, otherwise false
      */
     public boolean isBleeding (){
         return isBleeding;
+    }
+
+    /**
+     * Playing status is used to determine whether or not the player needs to be created or loaded
+     *
+     * @return true if the player is currently on a life, otherwise false
+     */
+    public boolean isPlaying (){
+        return isPlaying;
     }
 
     /**
@@ -97,11 +119,26 @@ public class LocalPlayer {
     }
 
     /**
+     * Updates every second to update the players total time in seconds
+     */
+    public void tickTimePlayed (){
+        timePlayed++;
+    }
+
+    /**
      *
      * @param objective
      */
     public void setObjective (final Objective objective){
         this.objective = objective;
+    }
+
+    /**
+     *
+     * @param playing
+     */
+    public void setPlayingStatus (boolean playing){
+        this.isPlaying = playing;
     }
 
     /**
@@ -144,14 +181,6 @@ public class LocalPlayer {
      */
     public void setDeaths (int deaths){
         this.deaths = deaths;
-    }
-
-    /**
-     *
-     * @param bestTimeString
-     */
-    public void setBestTimeString (String bestTimeString){
-        this.bestTimeString = bestTimeString;
     }
 
     /**

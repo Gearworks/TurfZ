@@ -96,7 +96,7 @@ public class DatabaseManager {
      * @param localPlayer
      */
     public void createPlayer (final LocalPlayer localPlayer) throws SQLException{
-        final PreparedStatement ps = getConnection ().prepareStatement (String.format ("INSERT INTO players (playername, kills, zombie_kills, deaths, best_time, avg_time) VALUES ('%s', 0, 0, 0, '0d0h0m0s', '0d0h0m0s')",
+        final PreparedStatement ps = getConnection ().prepareStatement (String.format ("INSERT INTO players (`playername`, `kills`, `zombie_kills`,  `best_time`, `avg_time`, `playing`, `playing_time`, `total_kills`, `total_deaths`, `total_zkills`) VALUES ('%s', 0, 0, 0, 0, 0, 0, 0, 0, 0)",
                 localPlayer.getBukkitPlayer ().getName ()));
 
         ps.execute ();
