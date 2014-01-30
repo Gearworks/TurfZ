@@ -1,18 +1,14 @@
 package org.turfwars.turfz.tasks;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
 import org.turfwars.turfz.TurfZ;
 import org.turfwars.turfz.persistence.chests.ChestTier;
 import org.turfwars.turfz.persistence.chests.LocalChest;
+import org.turfwars.turfz.utilities.LocationUtil;
 import org.turfwars.turfz.utilities.Messaging;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -21,17 +17,16 @@ public class ChestTask implements Runnable {
 
     private final List<LocalChest> chests = new ArrayList<LocalChest> ();
 
-    public void run (){
+    public ChestTask (){
         loadChests ();
+    }
 
+    public void run (){
         for (final LocalChest chest : chests){
-            if (chest.getLocation ().getBlock ().getType () == Material.CHEST){
+            if (chest.getLocation ().getBlock () != null && chest.getLocation ().getBlock ().getType () == Material.CHEST){
                 addItems ((Chest) chest.getLocation ().getBlock ().getState (), chest.getChestTier ());
             }
         }
-
-        // Clean up the list
-        chests.clear ();
     }
 
     /**
@@ -58,27 +53,15 @@ public class ChestTask implements Runnable {
      * Will load the list from the MySQL server so that way we can use less memory by only temporarily storing the chest data
      */
     private void loadChests () {
-        final Connection conn = TurfZ.getDatabaseManager ().getConnection ();
+        final List<String> chestCoords = TurfZ.getConfigRegistry ().getChestConfig ().getStringList ("chests");
 
-        if (conn != null){
-            try{
-                final PreparedStatement ps = conn.prepareStatement ("SELECT * FROM chests");
-                final ResultSet rs = ps.executeQuery ();
-                while (rs.next ()){
-                    // Make sure the tier exists before we actually start adding items that may not be there
-                    if (TurfZ.getTierRegistry ().getChestTier (rs.getString ("tier")) != null){
-                        // Location of the chest
-                        final Location location = new Location (TurfZ.getMainWorld (), rs.getDouble ("x"), rs.getDouble ("y"), rs.getDouble ("z"));
-                        // Load the chest into the chest list
-                        chests.add (new LocalChest (location, TurfZ.getTierRegistry ().getChestTier (rs.getString ("tier"))));
-                    }else{
-                        Messaging.severe (String.format ("%s is an unknown tier", rs.getString ("tier")));
-                    }
-                }
-            }catch(SQLException e){
-                e.printStackTrace ();
-            }
+        for (final String chestData : chestCoords){
+            chests.add (LocationUtil.getLocalChest (chestData));
         }
+    }
+
+    public List<LocalChest> getChests (){
+        return chests;
     }
 
     private static final Random random = new Random ();

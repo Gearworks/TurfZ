@@ -2,10 +2,9 @@ package org.turfwars.turfz.persistence.locations;
 
 import org.bukkit.Location;
 import org.turfwars.turfz.TurfZ;
-import org.turfwars.turfz.persistence.locations.player.PlayerSpawn;
-import org.turfwars.turfz.persistence.locations.zombie.ZombieSpawn;
+import org.turfwars.turfz.persistence.locations.spawns.PlayerSpawn;
+import org.turfwars.turfz.persistence.locations.spawns.ZombieSpawn;
 import org.turfwars.turfz.utilities.LocationUtil;
-import org.turfwars.turfz.utilities.Messaging;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,48 +20,29 @@ public class LocationManager {
     private final List<PlayerSpawn> playerSpawns = new ArrayList<PlayerSpawn>();
 
     public LocationManager (){
-        try{
-            loadZombieSpawns ();
-            loadPlayerSpawns ();
-        }catch (SQLException e){
-            e.printStackTrace ();
+        loadZombieSpawns ();
+        loadPlayerSpawns ();
+    }
+
+    /**
+     * Will load all the spawns spawn points saved into the flat file for spawns
+     */
+    private void loadZombieSpawns () {
+        final List<String> zombieList = TurfZ.getConfigRegistry ().getSpawnConfig ().getStringList ("zombies");
+
+        for (final String zombieData : zombieList){
+            zombieSpawns.add (LocationUtil.getZombieSpawn (zombieData));
         }
     }
 
     /**
-     * Will load all the zombie spawn points saved into the MySQL table and convert them into zombie spawn objects that will be stored inside the map
-     *
-     * @throws SQLException
+     * Will load all the player spawn points saved into the flat file for spawns
      */
-    private void loadZombieSpawns () throws SQLException {
-        final Connection conn = TurfZ.getDatabaseManager ().getConnection ();
+    private void loadPlayerSpawns (){
+        final List<String> playerList = TurfZ.getConfigRegistry ().getSpawnConfig ().getStringList ("players");
 
-        if (conn != null){
-            final PreparedStatement ps = conn.prepareStatement ("SELECT * FROM zombiespawns");
-            ResultSet rs = ps.executeQuery ();
-
-            while (rs.next ()){
-                zombieSpawns.add (new ZombieSpawn (new Location (TurfZ.getMainWorld (), rs.getDouble ("x"), rs.getDouble ("y"), rs.getDouble ("z")), rs.getInt ("radius")));
-            }
-        }
-    }
-
-    /**
-     * Will load all the player spawn points saved into the MySQL table and convert them into zombie spawn objects that will be stored inside the map
-     *
-     * @throws SQLException
-     */
-    private void loadPlayerSpawns () throws SQLException{
-        final Connection conn = TurfZ.getDatabaseManager ().getConnection ();
-
-        if (conn != null){
-            final PreparedStatement ps = conn.prepareStatement ("SELECT * FROM playerspawns");
-            ResultSet rs = ps.executeQuery ();
-
-            while (rs.next ()){
-                playerSpawns.add (new PlayerSpawn (rs.getString ("name"), new Location (TurfZ.getMainWorld (),
-                        rs.getDouble ("x"), rs.getDouble ("y"), rs.getDouble ("z"), rs.getFloat ("pitch"), rs.getFloat ("yaw")), rs.getInt ("radius")));
-            }
+        for (final String playerSpawnData : playerList){
+            playerSpawns.add (LocationUtil.getPlayerSpawn (playerSpawnData));
         }
     }
 
@@ -80,7 +60,7 @@ public class LocationManager {
 
     /**
      *
-     * @return the list of all the zombie spawns
+     * @return the list of all the spawns spawns
      */
     public List<ZombieSpawn> getZombieSpawns (){
         return zombieSpawns;

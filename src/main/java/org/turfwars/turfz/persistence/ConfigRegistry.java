@@ -2,9 +2,13 @@ package org.turfwars.turfz.persistence;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.turfwars.turfz.TurfZ;
+import org.turfwars.turfz.persistence.chests.LocalChest;
+import org.turfwars.turfz.persistence.locations.spawns.ZombieSpawn;
 import org.turfwars.turfz.utilities.Messaging;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConfigRegistry {
 
@@ -12,6 +16,7 @@ public class ConfigRegistry {
     private YamlConfiguration mainConfig;
     private YamlConfiguration zombieConfig;
     private YamlConfiguration chestConfig;
+    private YamlConfiguration spawnConfig;
 
     private final File dataFolder = TurfZ.getInstance ().getDataFolder ();
 
@@ -34,6 +39,18 @@ public class ConfigRegistry {
                 Messaging.info ("Loading ZombieConfig.yml into the system...");
                 continue;
             }
+
+            if (configFile.getName ().equals ("chests.yml")){
+                chestConfig = YamlConfiguration.loadConfiguration (configFile);
+                Messaging.info ("Loading chest.yml into the system...");
+                continue;
+            }
+
+            if (configFile.getName ().equals ("spawns.yml")){
+                spawnConfig = YamlConfiguration.loadConfiguration (configFile);
+                Messaging.info ("Loading spawns.yml into the system...");
+                continue;
+            }
         }
     }
 
@@ -47,9 +64,25 @@ public class ConfigRegistry {
 
     /**
      *
-     * @return the zombie configuration for the plugin
+     * @return the spawns configuration for the plugin
      */
     public YamlConfiguration getZombieConfig (){
         return zombieConfig;
+    }
+
+    /**
+     *
+     * @return all the chests configuration and locations
+     */
+    public YamlConfiguration getChestConfig (){
+        return chestConfig;
+    }
+
+    /**
+     *
+     * @return all the spawns in the game (players, zombies, etc).
+     */
+    public YamlConfiguration getSpawnConfig (){
+        return spawnConfig;
     }
 }

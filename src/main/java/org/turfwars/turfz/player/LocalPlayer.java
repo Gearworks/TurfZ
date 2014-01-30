@@ -71,7 +71,7 @@ public class LocalPlayer {
 
     /**
      *
-     * @return the number of zombie kills a player has gotten in their current life
+     * @return the number of spawns kills a player has gotten in their current life
      */
     public int getZombieKills (){
         return zombieKills;

@@ -52,7 +52,7 @@ public class Consumer implements Runnable {
             long lStartTime = System.currentTimeMillis ();
 
             while ((!this.queue.isEmpty ()) && (System.currentTimeMillis () - lStartTime < 100L)) {
-                Query query = (Query) this.queue.poll ();
+                Query query = this.queue.poll ();
                 if (query != null) {
                     for (String sQuery : query.getQuery ()) {
                         try {

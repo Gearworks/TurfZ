@@ -11,6 +11,7 @@ import org.turfwars.turfz.listener.EffectListener;
 import org.turfwars.turfz.listener.EntityListener;
 import org.turfwars.turfz.listener.PlayerListener;
 import org.turfwars.turfz.persistence.ConfigRegistry;
+import org.turfwars.turfz.persistence.chests.LocalChest;
 import org.turfwars.turfz.persistence.chests.TierRegistry;
 import org.turfwars.turfz.persistence.locations.LocationManager;
 import org.turfwars.turfz.player.PlayerRegistry;
@@ -18,7 +19,10 @@ import org.turfwars.turfz.tasks.ChestTask;
 import org.turfwars.turfz.tasks.ScoreboardTask;
 import org.turfwars.turfz.tasks.SpawningTask;
 import org.turfwars.turfz.tasks.TimeTask;
+import org.turfwars.turfz.utilities.ConfigUtil;
 import org.turfwars.turfz.utilities.Messaging;
+
+import java.util.List;
 
 public class TurfZ extends JavaPlugin {
 
@@ -54,20 +58,16 @@ public class TurfZ extends JavaPlugin {
 
         System.out.println ("TurfZ v0.0.10a has been loaded!");
 
-        locationManager = new LocationManager ();
-
-        if (spawningTask == null) Messaging.severe ("It's the spawning task itself");
-
         // Register the consumer so it can query everything in it's queue
         Bukkit.getScheduler ().runTaskTimer (this, databaseManager.getConsumer (), 120L, 120L);
-        // Register the task that will spawn a zombie every 15 seconds
-        Bukkit.getScheduler ().runTaskTimer (this, spawningTask, 0L, 20L * 15);
+        // Register the task that will spawn a spawns every 15 seconds
+        //Bukkit.getScheduler ().runTaskTimer (this, spawningTask, 0L, 20L * 15);
         // Register the task that will spawn items in chest every 20 seconds TODO change time
         Bukkit.getScheduler ().runTaskTimer (this, chestTask, 0L, 20L * 20);
         // Update the scoreboard every two seconds
         Bukkit.getScheduler ().runTaskTimer (this, scoreboardTask, 0L, 20L * 2);
         // Will update the time played for everybody
-        Bukkit.getScheduler ().runTaskTimer (this, new TimeTask (), 0L, 20L);
+        //Bukkit.getScheduler ().runTaskTimer (this, new TimeTask (), 0L, 20L);
 
         new EntityListener ();
         new PlayerListener ();
@@ -84,6 +84,9 @@ public class TurfZ extends JavaPlugin {
         if (databaseManager.getConsumer ().getQueueSize () > 0){
             databaseManager.getConsumer ().run ();
         }
+
+        ConfigUtil.saveChestToConfig ();
+        ConfigUtil.saveZombieSpawnsToConfig ();
     }
 
     private void populateMembers (){
@@ -93,12 +96,13 @@ public class TurfZ extends JavaPlugin {
         configRegistry = new ConfigRegistry ();
         // Database second so that way anything using MySQL has access to it
         databaseManager = new DatabaseManager ();
+        locationManager = new LocationManager ();
 
         playerRegistry = new PlayerRegistry ();
 
         // Tasks
         tierRegistry = new TierRegistry ();
-        spawningTask = new SpawningTask ();
+        //spawningTask = new SpawningTask ();
         chestTask = new ChestTask ();
         scoreboardTask = new ScoreboardTask ();
     }
@@ -125,6 +129,10 @@ public class TurfZ extends JavaPlugin {
 
     public static ScoreboardTask getScoreboardTask (){
         return instance.scoreboardTask;
+    }
+
+    public static List<LocalChest> getChests (){
+        return instance.chestTask.getChests ();
     }
 
     public static TurfZ getInstance (){
