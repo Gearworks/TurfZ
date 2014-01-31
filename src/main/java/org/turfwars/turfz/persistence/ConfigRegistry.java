@@ -18,6 +18,9 @@ public class ConfigRegistry {
     private YamlConfiguration chestConfig;
     private YamlConfiguration spawnConfig;
 
+    private File chestFile;
+    private File spawnFile;
+
     private final File dataFolder = TurfZ.getInstance ().getDataFolder ();
 
     /**
@@ -42,12 +45,14 @@ public class ConfigRegistry {
 
             if (configFile.getName ().equals ("chests.yml")){
                 chestConfig = YamlConfiguration.loadConfiguration (configFile);
+                chestFile = configFile;
                 Messaging.info ("Loading chest.yml into the system...");
                 continue;
             }
 
             if (configFile.getName ().equals ("spawns.yml")){
                 spawnConfig = YamlConfiguration.loadConfiguration (configFile);
+                spawnFile = configFile;
                 Messaging.info ("Loading spawns.yml into the system...");
                 continue;
             }
@@ -84,5 +89,21 @@ public class ConfigRegistry {
      */
     public YamlConfiguration getSpawnConfig (){
         return spawnConfig;
+    }
+
+    /**
+     *
+     * @return the file the chest config is located
+     */
+    public File getChestFile (){
+        return chestFile;
+    }
+
+    /**
+     *
+     * @return the file the spawn config is located
+     */
+    public File getSpawnFile (){
+        return spawnFile;
     }
 }

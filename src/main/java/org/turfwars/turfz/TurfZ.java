@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.turfwars.turfz.commands.CmdCreate;
+import org.turfwars.turfz.commands.CmdSave;
 import org.turfwars.turfz.commands.CmdTest;
 import org.turfwars.turfz.database.DatabaseManager;
 import org.turfwars.turfz.listener.EffectListener;
@@ -85,6 +86,7 @@ public class TurfZ extends JavaPlugin {
         // Register commands
         getCommand ("test").setExecutor (new CmdTest ());
         getCommand ("create").setExecutor (new CmdCreate ());
+        getCommand ("save").setExecutor (new CmdSave ());
     }
 
     @Override

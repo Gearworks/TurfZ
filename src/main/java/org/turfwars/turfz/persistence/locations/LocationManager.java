@@ -5,6 +5,7 @@ import org.turfwars.turfz.TurfZ;
 import org.turfwars.turfz.persistence.locations.spawns.PlayerSpawn;
 import org.turfwars.turfz.persistence.locations.spawns.ZombieSpawn;
 import org.turfwars.turfz.utilities.LocationUtil;
+import org.turfwars.turfz.utilities.Messaging;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,10 +29,11 @@ public class LocationManager {
      * Will load all the spawns spawn points saved into the flat file for spawns
      */
     private void loadZombieSpawns () {
-        final List<String> zombieList = TurfZ.getConfigRegistry ().getSpawnConfig ().getStringList ("zombies");
+        final List<String> zombieList = TurfZ.getConfigRegistry ().getSpawnConfig ().getStringList ("spawns.zombies");
 
         for (final String zombieData : zombieList){
             zombieSpawns.add (LocationUtil.getZombieSpawn (zombieData));
+            Messaging.info (zombieData);
         }
     }
 
@@ -39,7 +41,7 @@ public class LocationManager {
      * Will load all the player spawn points saved into the flat file for spawns
      */
     private void loadPlayerSpawns (){
-        final List<String> playerList = TurfZ.getConfigRegistry ().getSpawnConfig ().getStringList ("players");
+        final List<String> playerList = TurfZ.getConfigRegistry ().getSpawnConfig ().getStringList ("spawns.players");
 
         for (final String playerSpawnData : playerList){
             playerSpawns.add (LocationUtil.getPlayerSpawn (playerSpawnData));

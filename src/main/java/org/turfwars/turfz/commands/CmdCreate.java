@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.turfwars.turfz.TurfZ;
 import org.turfwars.turfz.persistence.chests.LocalChest;
+import org.turfwars.turfz.persistence.locations.spawns.PlayerSpawn;
 import org.turfwars.turfz.persistence.locations.spawns.ZombieSpawn;
 import org.turfwars.turfz.utilities.ConfigUtil;
 import org.turfwars.turfz.utilities.Messaging;
@@ -36,8 +37,19 @@ public class CmdCreate implements CommandExecutor {
                 // We need to create the spawn, at it to the map and then queue it to query
                 final ZombieSpawn createdSpawn = new ZombieSpawn (player.getLocation (), Integer.parseInt (args[1]));
                 TurfZ.getLocationManager ().getZombieSpawns ().add (createdSpawn);
-                Messaging.sendCreateMessage (player, "You have created a spawns spawn at your location!");
-                Messaging.info (createdSpawn.getLocation ().toString () + createdSpawn.getRadius ());
+                Messaging.sendCreateMessage (player, "You have created a zombie spawn at your location! Don't forget to save!");
+            }
+
+            if (args[0].equalsIgnoreCase ("pspawn")){
+                if (args.length != 3){
+                    Messaging.sendCreateMessage (player, "Usage: /create zspawn [name] [radius]");
+                    return true;
+                }
+
+                // We need to create the spawn, at it to the map and then queue it to query
+                final PlayerSpawn createdSpawn = new PlayerSpawn (args[0], player.getLocation (), Integer.parseInt (args[2]));
+                TurfZ.getLocationManager ().getPlayerSpawns ().add (createdSpawn);
+                Messaging.sendCreateMessage (player, "You have created a player spawn at your location! Don't forget to save!");
             }
 
             if (args[0].equalsIgnoreCase ("chest")){
@@ -52,6 +64,7 @@ public class CmdCreate implements CommandExecutor {
                 }
 
                 TurfZ.getChests ().add (new LocalChest (player.getLocation (), TurfZ.getTierRegistry ().getChestTier (args[1])));
+                Messaging.sendCreateMessage (player, "You have created a chest at your location! Don't forget to save!");
 
                 // Place a block at the location of the player
                 player.getLocation ().getBlock ().setType (Material.CHEST);
