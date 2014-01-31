@@ -48,6 +48,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerDeath (final PlayerDeathEvent event){
         final LocalPlayer deadPlayer = TurfZ.getPlayerRegistry ().getPlayer (event.getEntity ());
+        deadPlayer.stopBleeding ();
         if (event.getEntity ().getKiller () != null){
             if (event.getEntity ().getKiller ().getType () == EntityType.PLAYER){
                 final LocalPlayer killer = TurfZ.getPlayerRegistry ().getPlayer (event.getEntity ().getKiller ());

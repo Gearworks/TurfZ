@@ -1,8 +1,10 @@
 package org.turfwars.turfz;
 
-import net.minecraft.server.v1_7_R1.Scoreboard;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.turfwars.turfz.commands.CmdCreate;
 import org.turfwars.turfz.commands.CmdTest;
@@ -11,6 +13,7 @@ import org.turfwars.turfz.listener.EffectListener;
 import org.turfwars.turfz.listener.EntityListener;
 import org.turfwars.turfz.listener.PlayerListener;
 import org.turfwars.turfz.persistence.ConfigRegistry;
+import org.turfwars.turfz.persistence.ItemMetaData;
 import org.turfwars.turfz.persistence.chests.LocalChest;
 import org.turfwars.turfz.persistence.chests.TierRegistry;
 import org.turfwars.turfz.persistence.locations.LocationManager;
@@ -18,11 +21,11 @@ import org.turfwars.turfz.player.PlayerRegistry;
 import org.turfwars.turfz.tasks.ChestTask;
 import org.turfwars.turfz.tasks.ScoreboardTask;
 import org.turfwars.turfz.tasks.SpawningTask;
-import org.turfwars.turfz.tasks.TimeTask;
 import org.turfwars.turfz.utilities.ConfigUtil;
-import org.turfwars.turfz.utilities.Messaging;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TurfZ extends JavaPlugin {
 
@@ -45,6 +48,11 @@ public class TurfZ extends JavaPlugin {
     // Task will update scoreboard for all players
     private ScoreboardTask scoreboardTask;
 
+    // This will contain any items that are in need of name or lore changing
+    private static final Map<Material, ItemMetaData> itemMap = new HashMap<Material, ItemMetaData> ();
+    // This will contain any items derived from the Ink material that are in need of name or lore changing
+    private static final Map<Integer, ItemMetaData> inkMap = new HashMap<Integer, ItemMetaData> ();
+
     private static TurfZ instance;
 
     @Override
@@ -54,6 +62,7 @@ public class TurfZ extends JavaPlugin {
 
     @Override
     public void onEnable (){
+        loadNameItemMaps ();
         populateMembers ();
 
         System.out.println ("TurfZ v0.0.10a has been loaded!");
@@ -107,6 +116,11 @@ public class TurfZ extends JavaPlugin {
         scoreboardTask = new ScoreboardTask ();
     }
 
+    private void loadNameItemMaps (){
+        getItemMap ().put (Material.PAPER, new ItemMetaData (new ItemStack (Material.PAPER), "\247cBandage", "Apply this to yourself in order to stop any bleeding!"));
+        getInkMap ().put (1, new ItemMetaData (new ItemStack (Material.INK_SACK, 1, (short) 1), "\247cBlood bag", "Apply this to an ally to slowly regenerate their health!"));
+    }
+
     public static DatabaseManager getDatabaseManager (){
         return instance.databaseManager;
     }
@@ -135,8 +149,38 @@ public class TurfZ extends JavaPlugin {
         return instance.chestTask.getChests ();
     }
 
+    public static Map<Material, ItemMetaData> getItemMap (){
+        return itemMap;
+    }
+
+    public static Map<Integer, ItemMetaData> getInkMap (){
+        return inkMap;
+    }
+
     public static TurfZ getInstance (){
         return instance;
+    }
+
+    public ItemStack checkNeededMeta (ItemStack itemStack){
+        ItemMeta itemMeta = itemStack.getItemMeta ();
+
+        if (itemStack.getType () == Material.INK_SACK){
+            int durability = itemStack.getDurability ();
+            if (getInkMap ().containsKey (durability)){
+                final ItemMetaData itemMetaData = TurfZ.getInkMap ().get (durability);
+                itemMeta.setDisplayName (itemMetaData.getDisplayName ());
+                itemMeta.setLore (itemMetaData.getLore ());
+            }
+        }else{
+            if (getItemMap ().containsKey (itemStack.getType ())){
+                final ItemMetaData itemMetaData = TurfZ.getItemMap ().get (itemStack.getType ());
+                itemMeta.setDisplayName (itemMetaData.getDisplayName ());
+                itemMeta.setLore (itemMetaData.getLore ());
+            }
+        }
+
+        itemStack.setItemMeta (itemMeta);
+        return itemStack;
     }
 
     /**

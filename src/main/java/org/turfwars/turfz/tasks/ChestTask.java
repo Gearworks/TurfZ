@@ -3,7 +3,9 @@ package org.turfwars.turfz.tasks;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.turfwars.turfz.TurfZ;
+import org.turfwars.turfz.persistence.ItemMetaData;
 import org.turfwars.turfz.persistence.chests.ChestTier;
 import org.turfwars.turfz.persistence.chests.LocalChest;
 import org.turfwars.turfz.utilities.LocationUtil;
@@ -23,6 +25,7 @@ public class ChestTask implements Runnable {
 
     public void run (){
         for (final LocalChest chest : chests){
+            Messaging.info (chest.getLocation ().getBlock ().toString ());
             if (chest.getLocation ().getBlock () != null && chest.getLocation ().getBlock ().getType () == Material.CHEST){
                 addItems ((Chest) chest.getLocation ().getBlock ().getState (), chest.getChestTier ());
             }

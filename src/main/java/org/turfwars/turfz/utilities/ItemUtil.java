@@ -1,9 +1,12 @@
 package org.turfwars.turfz.utilities;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.turfwars.turfz.TurfZ;
+import org.turfwars.turfz.persistence.ItemMetaData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +35,7 @@ public class ItemUtil {
                 itemStack = new ItemStack (Integer.parseInt (itemInfo[0]));
             }
             // Will put the item into the map as well as the corresponding percentage
-            toReturn.put (itemStack, Integer.parseInt (itemString[1]));
+            toReturn.put (TurfZ.getInstance ().checkNeededMeta (itemStack), Integer.parseInt (itemString[1]));
         }
 
         return toReturn;
