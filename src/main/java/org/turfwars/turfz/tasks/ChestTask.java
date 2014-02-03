@@ -25,7 +25,6 @@ public class ChestTask implements Runnable {
 
     public void run (){
         for (final LocalChest chest : chests){
-            Messaging.info (chest.getLocation ().getBlock ().toString ());
             if (chest.getLocation ().getBlock () != null && chest.getLocation ().getBlock ().getType () == Material.CHEST){
                 addItems ((Chest) chest.getLocation ().getBlock ().getState (), chest.getChestTier ());
             }

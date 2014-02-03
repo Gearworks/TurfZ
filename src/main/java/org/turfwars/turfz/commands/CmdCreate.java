@@ -42,7 +42,7 @@ public class CmdCreate implements CommandExecutor {
 
             if (args[0].equalsIgnoreCase ("pspawn")){
                 if (args.length != 3){
-                    Messaging.sendCreateMessage (player, "Usage: /create zspawn [name] [radius]");
+                    Messaging.sendCreateMessage (player, "Usage: /create pspawn [name] [radius]");
                     return true;
                 }
 

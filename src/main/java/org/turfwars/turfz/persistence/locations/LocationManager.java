@@ -33,7 +33,6 @@ public class LocationManager {
 
         for (final String zombieData : zombieList){
             zombieSpawns.add (LocationUtil.getZombieSpawn (zombieData));
-            Messaging.info (zombieData);
         }
     }
 

@@ -5,6 +5,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -65,6 +67,22 @@ public class PlayerListener implements Listener {
         }
 
         deadPlayer.setPlayingStatus (false);
+    }
+
+    @EventHandler
+    public void onPlayerPlace (final BlockPlaceEvent event){
+        if (!event.getPlayer ().isOp () || !event.getPlayer ().hasPermission ("turfz.build")){
+            event.setCancelled (true);
+            event.getPlayer ().sendMessage ("\2474You do not have permission to build anything!");
+        }
+    }
+
+    @EventHandler
+    public void onPlayerBreak (final BlockBreakEvent event){
+        if (!event.getPlayer ().isOp () || !event.getPlayer ().hasPermission ("turfz.break")){
+            event.setCancelled (true);
+            event.getPlayer ().sendMessage ("\2474You do not have permission to break anything!");
+        }
     }
 
     @EventHandler

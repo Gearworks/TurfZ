@@ -22,7 +22,9 @@ import org.turfwars.turfz.player.PlayerRegistry;
 import org.turfwars.turfz.tasks.ChestTask;
 import org.turfwars.turfz.tasks.ScoreboardTask;
 import org.turfwars.turfz.tasks.SpawningTask;
+import org.turfwars.turfz.tasks.TimeTask;
 import org.turfwars.turfz.utilities.ConfigUtil;
+import org.turfwars.turfz.utilities.Messaging;
 
 import java.util.HashMap;
 import java.util.List;
@@ -71,13 +73,13 @@ public class TurfZ extends JavaPlugin {
         // Register the consumer so it can query everything in it's queue
         Bukkit.getScheduler ().runTaskTimer (this, databaseManager.getConsumer (), 120L, 120L);
         // Register the task that will spawn a spawns every 15 seconds
-        //Bukkit.getScheduler ().runTaskTimer (this, spawningTask, 0L, 20L * 15);
-        // Register the task that will spawn items in chest every 20 seconds TODO change time
-        Bukkit.getScheduler ().runTaskTimer (this, chestTask, 0L, 20L * 20);
+        Bukkit.getScheduler ().runTaskTimer (this, spawningTask, 0L, 20L * 15);
+        // Register the task that will spawn items in chest every seven minutes
+        Bukkit.getScheduler ().runTaskTimer (this, chestTask, 0L, 7L * 60L * 20);
         // Update the scoreboard every two seconds
         Bukkit.getScheduler ().runTaskTimer (this, scoreboardTask, 0L, 20L * 2);
         // Will update the time played for everybody
-        //Bukkit.getScheduler ().runTaskTimer (this, new TimeTask (), 0L, 20L);
+        Bukkit.getScheduler ().runTaskTimer (this, new TimeTask (), 0L, 20L);
 
         new EntityListener ();
         new PlayerListener ();
@@ -87,6 +89,8 @@ public class TurfZ extends JavaPlugin {
         getCommand ("test").setExecutor (new CmdTest ());
         getCommand ("create").setExecutor (new CmdCreate ());
         getCommand ("save").setExecutor (new CmdSave ());
+
+        if (getConfigRegistry ().getConfig ().getBoolean ("zombies.spawn") == false) Messaging.info ("Zombies are disabled to spawn");
     }
 
     @Override
@@ -113,7 +117,7 @@ public class TurfZ extends JavaPlugin {
 
         // Tasks
         tierRegistry = new TierRegistry ();
-        //spawningTask = new SpawningTask ();
+        spawningTask = new SpawningTask ();
         chestTask = new ChestTask ();
         scoreboardTask = new ScoreboardTask ();
     }

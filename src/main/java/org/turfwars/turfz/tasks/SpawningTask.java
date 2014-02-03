@@ -24,6 +24,8 @@ public class SpawningTask implements Runnable {
      * Task will be called to attempt and spawn a spawns for each spawn point
      */
     public void run (){
+        if (TurfZ.getConfigRegistry ().getConfig ().getBoolean ("zombies.spawn") == false) return;
+
         for (final ZombieSpawn zombieSpawn : TurfZ.getLocationManager ().getZombieSpawns ()){
             // Get a spawn inside the radius of the set location
             final Location location = LocationUtil.getLocationInsideRadius (zombieSpawn.getLocation (), zombieSpawn.getRadius ());
